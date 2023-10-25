@@ -4,7 +4,7 @@ This Go program downloads and extracts the latest version of the ElvUI addon for
 
 ## Simple usage
 
-You can download the binaries [here](<https://github.com/qqMelon/upgraded-spork/releases/tag/v1.0.0).
+You can download the binaries [here](https://github.com/qqMelon/upgraded-spork/releases/tag/v1.0.0).
 Or download the binaries you want on `bin/` forlder in project.
 
 ## development usage
@@ -12,7 +12,7 @@ Or download the binaries you want on `bin/` forlder in project.
 1. Clone the repository:
 
   ```bash
-  git clone https://github.com/your-username/elvui-updater.git
+  git clone https://github.com/qqMelon/upgraded-spork.git
   ```
 
 2. Navigate to the project directory:
