@@ -2,7 +2,12 @@
 
 This Go program downloads and extracts the latest version of the ElvUI addon for World of Warcraft from the official GitHub repository.
 
-## Usage
+## Simple usage
+
+You can download the binaries [here](<https://github.com/qqMelon/upgraded-spork/releases/tag/v1.0.0).
+Or download the binaries you want on `bin/` forlder in project.
+
+## development usage
 
 1. Clone the repository:
 
