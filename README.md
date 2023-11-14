@@ -7,7 +7,7 @@ This Go program downloads and extracts the latest version of the ElvUI addon for
 You can download the binaries [here](https://github.com/qqMelon/upgraded-spork/releases/tag/v1.0.0).
 Or download the binaries you want on `bin/` forlder in project.
 
-Place the binary on the interface forlder: `/wolrd_of_warcraft/interface/**here**/AddOns`
+Place the binary on the interface forlder: `/world_of_warcraft/_retail_/interface/**here**/AddOns`
 
 ## development usage
 
