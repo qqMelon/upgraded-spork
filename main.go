@@ -79,7 +79,7 @@ func main() {
 
 	err = unzip(fmt.Sprintf("%s.zip", lastTag), "./AddOns/")
 	if err != nil {
-		fmt.Printf("Erreur lors de la decompression du fichier zip: %s\n", err)
+		fmt.Printf("Error while decompressing zip file: %s\n", err)
 		time.Sleep(3 * time.Second)
 		return
 	}
@@ -91,15 +91,10 @@ func main() {
 func unzip(zipFile, dest string) error {
 	reader, err := zip.OpenReader(zipFile)
 	if err != nil {
-		return fmt.Errorf("Error while opening zip file : %s", err)
+		return fmt.Errorf("error while openning zip file: %s", err)
 	}
 	defer reader.Close()
-
 	commonPrefix := findCommonPrefix(reader.File)
-	if commonPrefix == "" {
-		return fmt.Errorf("None common prefix found")
-	}
-
 	for _, file := range reader.File {
 		if !strings.HasPrefix(file.Name, commonPrefix) {
 			continue
@@ -108,32 +103,32 @@ func unzip(zipFile, dest string) error {
 		// Build destination path with common prefix removed
 		relPath, err := filepath.Rel(commonPrefix, file.Name)
 		if err != nil {
-			return fmt.Errorf("Error while wrint relatif path %s : %s", file.Name, err)
+			return fmt.Errorf("error when writing relative path %s : %s", file.Name, err)
 		}
 
 		path := filepath.Join(dest, relPath)
 
 		if file.FileInfo().IsDir() {
-			// Create recursivly dir if not exist
+			// Create recursively dir if not exist
 			if err := os.MkdirAll(path, os.ModePerm); err != nil {
-				return fmt.Errorf("Error while creating dir %s : %s", path, err)
+				return fmt.Errorf("errror while creating directory %s : %s", path, err)
 			}
 			continue
 		}
 
 		fileReader, err := file.Open()
 		if err != nil {
-			return fmt.Errorf("Error while opening files %s in zip : %s", file.Name, err)
+			return fmt.Errorf("error while openning file %s in : %s", file.Name, err)
 		}
 		defer fileReader.Close()
 
-		// Create recursivly dir if not exist
+		// Create recursively dir if not exist
 		dir := filepath.Dir(path)
 		os.MkdirAll(dir, os.ModePerm)
 
 		targetFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
 		if err != nil {
-			return fmt.Errorf("Error while create file %s : %s", path, err)
+			return fmt.Errorf("error while creating file %s : %s", path, err)
 		}
 		defer targetFile.Close()
 
@@ -141,17 +136,20 @@ func unzip(zipFile, dest string) error {
 		if err != nil {
 			return fmt.Errorf("%s : %s", file.Name, err)
 		}
+
+		targetFile.Close()
 	}
 
+	time.Sleep(3 * time.Second)
 	// Remove all files and dirs except ElvUI, ElvUI_Libraries and ElvUI_Options
 	if err := cleanUpExcept(dest, []string{"ElvUI", "ElvUI_Libraries", "ElvUI_Options"}); err != nil {
-		return fmt.Errorf("Error when trying to delete useless file : %s", err)
+		return fmt.Errorf("error while deleting files : %s", err)
 	}
 
 	// Remove zip file
 	err = os.Remove(zipFile)
 	if err != nil {
-		return fmt.Errorf("Error while deleting zip file : %s", err)
+		return nil
 	}
 
 	return nil
@@ -169,11 +167,11 @@ func cleanUpExcept(dir string, keep []string) error {
 		if !contains(keep, file.Name()) {
 			if file.IsDir() {
 				if err := os.RemoveAll(fullPath); err != nil {
-					return fmt.Errorf("Error when trying to delete directroy %s : %s", fullPath, err)
+					return fmt.Errorf("error while deleting directories %s : %s", fullPath, err)
 				}
 			} else {
 				if err := os.Remove(fullPath); err != nil {
-					return fmt.Errorf("Error when trying to delete file %s : %s", fullPath, err)
+					return fmt.Errorf("error while deleting files %s : %s", fullPath, err)
 				}
 			}
 		}
