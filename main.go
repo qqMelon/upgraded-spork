@@ -122,9 +122,11 @@ func unzip(zipFile, dest string) error {
 		}
 		defer fileReader.Close()
 
-		// Create recursively dir if not exist
 		dir := filepath.Dir(path)
-		os.MkdirAll(dir, os.ModePerm)
+		err = os.MkdirAll(dir, os.ModePerm)
+		if err != nil {
+			return err
+		}
 
 		targetFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
 		if err != nil {
@@ -141,8 +143,9 @@ func unzip(zipFile, dest string) error {
 	}
 
 	time.Sleep(3 * time.Second)
-	// Remove all files and dirs except ElvUI, ElvUI_Libraries and ElvUI_Options
-	if err := cleanUpExcept(dest, []string{"ElvUI", "ElvUI_Libraries", "ElvUI_Options"}); err != nil {
+	// Remove all files and dirs in ElvUI project default files
+	toDelete := []string{".github", ".git", ".gitignore", ".pkgmeta", "CHANGELOG.md", "LICENSE.md", "Makefile", "README.md", "ThirdPartyNotices.md"}
+	if err := cleanUpExcept(dest, toDelete); err != nil {
 		return fmt.Errorf("error while deleting files : %s", err)
 	}
 
@@ -155,7 +158,7 @@ func unzip(zipFile, dest string) error {
 	return nil
 }
 
-func cleanUpExcept(dir string, keep []string) error {
+func cleanUpExcept(dir string, toDelete []string) error {
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		return err
@@ -164,7 +167,7 @@ func cleanUpExcept(dir string, keep []string) error {
 	for _, file := range files {
 		fullPath := filepath.Join(dir, file.Name())
 
-		if !contains(keep, file.Name()) {
+		if contains(toDelete, file.Name()) {
 			if file.IsDir() {
 				if err := os.RemoveAll(fullPath); err != nil {
 					return fmt.Errorf("error while deleting directories %s : %s", fullPath, err)
